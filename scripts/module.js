@@ -1,5 +1,5 @@
-const MOD_NAME = "HMF";
-const FOLDERS_LIST = "Hidden Folders";
+const MOD_NAME = "hide-my-folders";
+const FOLDERS_LIST = "hidden-folders-list";
 
 Hooks.once('init', async () => {
   game.settings.register(MOD_NAME, FOLDERS_LIST, {

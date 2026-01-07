@@ -3,8 +3,8 @@ const FOLDERS_LIST = "hidden-folders-list";
 
 const setFoldersToHidden = () => {
     const hiddenFolders = getHiddenFolders();
-    game.folders.forEach(f => {
-        f.set({ displayed: (hiddenFolders.includes(`Folder.${f._id}`) && !game.user.isGM) ? false : f.displayed })
+    game.folders.forEach(async (f) => {
+        await f.update({ displayed: (hiddenFolders.includes(`Folder.${f._id}`) && !game.user.isGM) ? false : f.displayed })
     });
     void ui.sidebar.render();
 }

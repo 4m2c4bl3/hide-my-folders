@@ -1,0 +1,15 @@
+.hide-my-folder-selected-gm> .folder-header::before{
+    content: "";
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    background: repeating-linear-gradient(45deg, #ffffff, #ffffff 10px, #868686 10px, #868686 20px);
+    z-index: -1;
+    opacity: 0.2;
+}
+
+.hide-my-folder-selected{
+    display: none;
+}

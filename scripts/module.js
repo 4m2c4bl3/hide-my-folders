@@ -11,6 +11,8 @@ Hooks.once('init', async () => {
 });
 
 
+//TODO: custom hook that fires on hiding/showing folder, causing other connected clients to update
+
 Hooks.on("renderAbstractSidebarTab", (app, html) => {
     const hiddenFolders = game.settings.get(MOD_NAME, FOLDERS_LIST);
     const elements = html.querySelectorAll('.directory-item [data-uuid]');

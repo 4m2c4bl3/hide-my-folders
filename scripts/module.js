@@ -10,6 +10,23 @@ Hooks.once('init', async function() {
     default: [],
   });
 });
+
+
+Hooks.on("renderAbstractSidebarTab", (app, html) => {
+    const hiddenFolders = game.settings.get(MOD_NAME, FOLDERS_LIST);
+    const elements = html.querySelectorAll('.directory-item [data-uuid]');
+    const isGm = game.user.isGM;
+    elements.forEach(e => {
+        const { uuid } = e.dataset;
+        if (!hiddenFolders.includes(uuid)) return;
+        if (isGm){
+            e.classList.add('hide-my-folders-selected-gm')
+        }else{
+            e.classList.add('hide-my-folders-selected')
+        }
+    });
+});
+
 Hooks.on("getFolderContextOptions", (_app, menuItems) => {
     const hiddenFolders = game.settings.get(MOD_NAME, FOLDERS_LIST);
 
@@ -29,7 +46,7 @@ Hooks.on("getFolderContextOptions", (_app, menuItems) => {
     menuItems.push({
         name: "Show To Players",
         icon: '<i class="fas fa-bolt"></i>',
-        condition: () => {
+        condition: li => {
             const id = li.dataset.uuid;
             return game.user.isGM && !hiddenFolders.includes(id);
         },

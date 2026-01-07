@@ -1,4 +1,4 @@
-.hide-my-folder-selected-gm::before {
+.hide-my-folders-selected-gm::before {
     content: "";
     position: absolute;
     top: 0;
@@ -12,6 +12,6 @@
 }
 
 
-.hide-my-folder-selected {
+.hide-my-folders-selected {
     display: none;
 }

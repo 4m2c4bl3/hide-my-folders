@@ -31,7 +31,7 @@ Hooks.on("getFolderContextOptions", (_app, menuItems) => {
 
     menuItems.push({
         name: game.i18n.localize(`${MOD_NAME}.add`),
-        icon: '<i class="fas fa-bolt"></i>',
+        icon: '<i class="fa-solid fa-eye-slash"></i>',
         condition: li => {
             const id = li.dataset.uuid;
             const classes = li.classList;
@@ -45,7 +45,7 @@ Hooks.on("getFolderContextOptions", (_app, menuItems) => {
 
     menuItems.push({
         name: game.i18n.localize(`${MOD_NAME}.remove`),
-        icon: '<i class="fas fa-bolt"></i>',
+        icon: '<i class="fa-solid fa-eye"></i>',
         condition: li => {
             const id = li.dataset.uuid;
             return game.user.isGM && hiddenFolders.includes(id);

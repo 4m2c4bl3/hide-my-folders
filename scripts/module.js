@@ -2,15 +2,15 @@ const MOD_NAME = "hide-my-folders";
 const FOLDERS_LIST = "hidden-folders-list";
 
 Hooks.once('init', async () => {
-  game.settings.register(MOD_NAME, FOLDERS_LIST, {
-    scope: 'world',
-    config: false,
-    type: Array,
-    default: [],
-    onChange: () => {
-        void ui.sidebar.render();
-    }
-  });
+    game.settings.register(MOD_NAME, FOLDERS_LIST, {
+        scope: 'world',
+        config: false,
+        type: Array,
+        default: [],
+        onChange: () => {
+            void ui.sidebar.render();
+        }
+    });
 });
 
 Hooks.on("renderAbstractSidebarTab", (_app, html) => {
@@ -20,28 +20,30 @@ Hooks.on("renderAbstractSidebarTab", (_app, html) => {
     elements.forEach(e => {
         const { uuid } = e.dataset;
         if (!hiddenFolders.includes(uuid)) return;
-        if (isGm){
+        if (isGm) {
             e.classList.add('hide-my-folders-selected-gm')
-        }else{
+        } else {
             e.classList.add('hide-my-folders-selected')
         }
     });
 });
 
-Hooks.on("getFolderContextOptions", (_app, menuItems) => {
-    const hiddenFolders = game.settings.get(MOD_NAME, FOLDERS_LIST);
+const getHiddenFolders = () => game.settings.get(MOD_NAME, FOLDERS_LIST);
 
+Hooks.on("getFolderContextOptions", (_app, menuItems) => {
     menuItems.push({
         name: game.i18n.localize(`${MOD_NAME}.add`),
         icon: '<i class="fa-solid fa-eye-slash"></i>',
         condition: li => {
-            const id = li.dataset.uuid;
-            const classes = li.classList;
-            return game.user.isGM && classes.contains('folder-header') && !hiddenFolders.includes(id);
+            const folder = li.parentElement;
+            const id = folder.dataset.uuid;
+            const classes = folder.classList;
+            return game.user.isGM && classes.contains('folder') && !getHiddenFolders().includes(id);
         },
         callback: li => {
-            const id = li.dataset.uuid;
-            game.settings.set(MOD_NAME, FOLDERS_LIST, [...hiddenFolders, id]);
+            const folder = li.parentElement;
+            const id = folder.dataset.uuid;
+            game.settings.set(MOD_NAME, FOLDERS_LIST, [...getHiddenFolders(), id]);
         }
     });
 
@@ -49,12 +51,15 @@ Hooks.on("getFolderContextOptions", (_app, menuItems) => {
         name: game.i18n.localize(`${MOD_NAME}.remove`),
         icon: '<i class="fa-solid fa-eye"></i>',
         condition: li => {
-            const id = li.dataset.uuid;
-            return game.user.isGM && hiddenFolders.includes(id);
+            const folder = li.parentElement;
+            const classes = folder.classList;
+            const id = folder.dataset.uuid;
+            return game.user.isGM && classes.contains('folder') && getHiddenFolders().includes(id);
         },
         callback: li => {
-            const id = li.dataset.uuid;
-            game.settings.set(MOD_NAME, FOLDERS_LIST, [...hiddenFolders.filter(f => f != id)]);
+            const folder = li.parentElement;
+            const id = folder.dataset.uuid;
+            game.settings.set(MOD_NAME, FOLDERS_LIST, [...getHiddenFolders().filter(f => f != id)]);
         }
     });
 });

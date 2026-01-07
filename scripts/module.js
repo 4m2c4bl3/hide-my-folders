@@ -1,29 +1,36 @@
 const MOD_NAME = "hide-my-folders";
 const FOLDERS_LIST = "hidden-folders-list";
 
+const setFoldersToHidden = () => {
+    const hiddenFolders = getHiddenFolders();
+    game.folders.forEach(f => {
+        f.set({ displayed: (hiddenFolders.includes(`Folder.${f._id}`) && !game.user.isGM) ? false : f.displayed })
+    });
+}
+
 Hooks.once('init', async () => {
+    setFoldersToHidden();
+
     game.settings.register(MOD_NAME, FOLDERS_LIST, {
         scope: 'world',
         config: false,
         type: Array,
         default: [],
         onChange: () => {
+            setFoldersToHidden();
             void ui.sidebar.render();
         }
     });
 });
 
 Hooks.on("renderAbstractSidebarTab", (_app, html) => {
-    const hiddenFolders = game.settings.get(MOD_NAME, FOLDERS_LIST);
     const elements = html.querySelectorAll('[data-uuid].directory-item');
     const isGm = game.user.isGM;
     elements.forEach(e => {
         const { uuid } = e.dataset;
-        if (!hiddenFolders.includes(uuid)) return;
+        if (!getHiddenFolders().includes(uuid)) return;
         if (isGm) {
             e.classList.add('hide-my-folders-selected-gm')
-        } else {
-            e.classList.add('hide-my-folders-selected')
         }
     });
 });

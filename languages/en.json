@@ -1,3 +1,4 @@
 {
-    "MODULE.hello": "hello"
+    "HMF.add": "Hide From Players",
+    "HMF.remove": "Show To Players"
 }

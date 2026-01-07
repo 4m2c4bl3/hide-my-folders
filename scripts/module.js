@@ -1,8 +1,7 @@
-const MOD_NAME = "Hide My Folders";
+const MOD_NAME = "HMF";
 const FOLDERS_LIST = "Hidden Folders";
 
-Hooks.once('init', async function() {
-
+Hooks.once('init', async () => {
   game.settings.register(MOD_NAME, FOLDERS_LIST, {
     scope: 'world',
     config: false,
@@ -31,11 +30,12 @@ Hooks.on("getFolderContextOptions", (_app, menuItems) => {
     const hiddenFolders = game.settings.get(MOD_NAME, FOLDERS_LIST);
 
     menuItems.push({
-        name: "Hide From Players",
+        name: game.i18n.localize(`${MOD_NAME}.add`),
         icon: '<i class="fas fa-bolt"></i>',
         condition: li => {
             const id = li.dataset.uuid;
-            return game.user.isGM && hiddenFolders.includes(id);
+            const classes = li.classList;
+            return game.user.isGM && classes.contains('folder') && !hiddenFolders.includes(id);
         },
         callback: li => {
             const id = li.dataset.uuid;
@@ -44,11 +44,11 @@ Hooks.on("getFolderContextOptions", (_app, menuItems) => {
     });
 
     menuItems.push({
-        name: "Show To Players",
+        name: game.i18n.localize(`${MOD_NAME}.remove`),
         icon: '<i class="fas fa-bolt"></i>',
         condition: li => {
             const id = li.dataset.uuid;
-            return game.user.isGM && !hiddenFolders.includes(id);
+            return game.user.isGM && hiddenFolders.includes(id);
         },
         callback: li => {
             const id = li.dataset.uuid;

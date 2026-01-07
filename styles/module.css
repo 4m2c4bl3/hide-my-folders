@@ -1,4 +1,4 @@
-.hide-my-folder-selected-gm> .folder-header::before{
+.hide-my-folder-selected-gm::before {
     content: "";
     position: absolute;
     top: 0;
@@ -6,10 +6,12 @@
     bottom: 0;
     left: 0;
     background: repeating-linear-gradient(45deg, #ffffff, #ffffff 10px, #868686 10px, #868686 20px);
-    z-index: -1;
+    z-index: 999;
     opacity: 0.2;
+    pointer-events: none;
 }
 
-.hide-my-folder-selected{
+
+.hide-my-folder-selected {
     display: none;
 }

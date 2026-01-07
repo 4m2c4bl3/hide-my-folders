@@ -6,11 +6,10 @@ const setFoldersToHidden = () => {
     game.folders.forEach(f => {
         f.set({ displayed: (hiddenFolders.includes(`Folder.${f._id}`) && !game.user.isGM) ? false : f.displayed })
     });
+    void ui.sidebar.render();
 }
 
 Hooks.once('init', async () => {
-    setFoldersToHidden();
-
     game.settings.register(MOD_NAME, FOLDERS_LIST, {
         scope: 'world',
         config: false,
@@ -18,10 +17,13 @@ Hooks.once('init', async () => {
         default: [],
         onChange: () => {
             setFoldersToHidden();
-            void ui.sidebar.render();
         }
     });
 });
+
+Hooks.on('ready', () => {
+    setFoldersToHidden();
+})
 
 Hooks.on("renderAbstractSidebarTab", (_app, html) => {
     const elements = html.querySelectorAll('[data-uuid].directory-item');

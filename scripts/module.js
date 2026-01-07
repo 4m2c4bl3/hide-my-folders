@@ -37,7 +37,7 @@ Hooks.on("getFolderContextOptions", (_app, menuItems) => {
         condition: li => {
             const id = li.dataset.uuid;
             const classes = li.classList;
-            return game.user.isGM && classes.contains('folder') && !hiddenFolders.includes(id);
+            return game.user.isGM && classes.contains('folder-header') && !hiddenFolders.includes(id);
         },
         callback: li => {
             const id = li.dataset.uuid;

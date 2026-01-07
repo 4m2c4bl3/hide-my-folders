@@ -15,7 +15,7 @@ Hooks.once('init', async () => {
 
 Hooks.on("renderAbstractSidebarTab", (_app, html) => {
     const hiddenFolders = game.settings.get(MOD_NAME, FOLDERS_LIST);
-    const elements = html.querySelectorAll('.directory-item [data-uuid]');
+    const elements = html.querySelectorAll('[data-uuid].directory-item');
     const isGm = game.user.isGM;
     elements.forEach(e => {
         const { uuid } = e.dataset;

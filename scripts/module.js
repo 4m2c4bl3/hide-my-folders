@@ -1,7 +1,7 @@
 const MOD_NAME = "hide-my-folders";
 const FOLDERS_LIST = "hidden-folders-list";
 
-Hooks.once('init', async () => {
+Hooks.once('ready', async () => {
   game.settings.register(MOD_NAME, FOLDERS_LIST, {
     scope: 'world',
     config: false,

@@ -30,7 +30,8 @@ Hooks.on("getFolderContextOptions", (_app, menuItems) => {
         name: "Show To Players",
         icon: '<i class="fas fa-bolt"></i>',
         condition: () => {
-            return game.user.isGM && !hiddenFolders.includes(uniqueId);
+            const id = li.dataset.uuid;
+            return game.user.isGM && !hiddenFolders.includes(id);
         },
         callback: li => {
             const id = li.dataset.uuid;

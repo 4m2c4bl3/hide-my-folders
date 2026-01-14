@@ -1,6 +1,10 @@
 {
     "hide-my-folders": {
         "add": "Hide From Players",
-        "remove": "Show To Players"
+        "remove": "Show To Players",
+        "settings": {
+            "min-role": "Minimum Editor Role",
+            "min-role-hint": "Users with this role can see all folders, and select which roles others can see"
+        }
     }
 }

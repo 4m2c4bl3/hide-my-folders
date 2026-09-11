@@ -6,11 +6,11 @@
 const MOD_NAME = "hide-my-folders";
 const FOLDERS_LIST = "hidden-folders-list";
 const EDITOR_ROLE = "hidden-folders-editor-role";
-/** @type {any} */
-const settings = game.settings;
+/** @returns {any} */
+const getSettings = () => game.settings;
 
 Hooks.once('init', async () => {
-    settings.register(MOD_NAME, FOLDERS_LIST, {
+    getSettings().register(MOD_NAME, FOLDERS_LIST, {
         scope: 'world',
         config: false,
         type: Array,
@@ -19,7 +19,7 @@ Hooks.once('init', async () => {
             void ui.sidebar?.render();
         }
     });
-    settings.register(MOD_NAME, EDITOR_ROLE, {
+    getSettings().register(MOD_NAME, EDITOR_ROLE, {
         name: `${MOD_NAME}.settings.min-role`,
         hint: `${MOD_NAME}.settings.min-role-hint`,
         scope: "world",
@@ -55,8 +55,8 @@ Hooks.on("renderAbstractSidebarTab", (_app, html) => {
 });
 
 /** @returns {string[]} */
-const getHiddenFolders = () => settings.get(MOD_NAME, FOLDERS_LIST);
-const getEditorRole = () => settings.get(MOD_NAME, EDITOR_ROLE);
+const getHiddenFolders = () => getSettings().get(MOD_NAME, FOLDERS_LIST);
+const getEditorRole = () => getSettings().get(MOD_NAME, EDITOR_ROLE);
 /** @param {User} user */
 const isAllowedEditor = (user) => user.role >= getEditorRole();
 /** @param {Element|null} element @returns {FolderElement|null} */
@@ -78,7 +78,7 @@ Hooks.on("getFolderContextOptions", (_app, menuItems) => {
             const folder = getFolder(target);
             const id = folder?.dataset.uuid;
             if (!id) return;
-            settings.set(MOD_NAME, FOLDERS_LIST, [...getHiddenFolders(), id]);
+            getSettings().set(MOD_NAME, FOLDERS_LIST, [...getHiddenFolders(), id]);
         }
     });
 
@@ -95,7 +95,7 @@ Hooks.on("getFolderContextOptions", (_app, menuItems) => {
             const folder = getFolder(target);
             const id = folder?.dataset.uuid;
             if (!id) return;
-            settings.set(MOD_NAME, FOLDERS_LIST, [...getHiddenFolders().filter(f => f != id)]);
+            getSettings().set(MOD_NAME, FOLDERS_LIST, [...getHiddenFolders().filter(f => f != id)]);
         }
     });
 });

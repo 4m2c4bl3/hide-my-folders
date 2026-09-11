@@ -1,0 +1,10 @@
+{
+  "private": true,
+  "scripts": {
+    "typecheck": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "@league-of-foundry-developers/foundry-vtt-types": "14.366.0-beta.20260906223049",
+    "typescript": "^7.0.2"
+  }
+}

@@ -1,18 +1,25 @@
+/**
+ * @typedef {{ role: number }} User
+ * @typedef {HTMLElement & { dataset: DOMStringMap }} FolderElement
+ */
+
 const MOD_NAME = "hide-my-folders";
 const FOLDERS_LIST = "hidden-folders-list";
 const EDITOR_ROLE = "hidden-folders-editor-role";
+/** @returns {any} */
+const getSettings = () => game.settings;
 
 Hooks.once('init', async () => {
-    game.settings.register(MOD_NAME, FOLDERS_LIST, {
+    getSettings().register(MOD_NAME, FOLDERS_LIST, {
         scope: 'world',
         config: false,
         type: Array,
         default: [],
         onChange: () => {
-            void ui.sidebar.render();
+            void ui.sidebar?.render();
         }
     });
-    game.settings.register(MOD_NAME, EDITOR_ROLE, {
+    getSettings().register(MOD_NAME, EDITOR_ROLE, {
         name: `${MOD_NAME}.settings.min-role`,
         hint: `${MOD_NAME}.settings.min-role-hint`,
         scope: "world",
@@ -25,18 +32,21 @@ Hooks.once('init', async () => {
             4: "USER.RoleGamemaster",
         },
         onChange: () => {
-            void ui.sidebar.render();
+            void ui.sidebar?.render();
         }
     });
 });
 
 
 Hooks.on("renderAbstractSidebarTab", (_app, html) => {
-    const elements = html.querySelectorAll('[data-uuid].directory-item');
+    const elements = html.querySelectorAll('.directory-item.folder[data-uuid]');
     elements.forEach(e => {
-        const { uuid } = e.dataset;
+        const element = getFolderElement(e);
+        if (!element) return;
+        const { uuid } = element.dataset;
+        if (!uuid) return;
         if (!getHiddenFolders().includes(uuid)) return;
-        if (isAllowedEditor(game.user)) {
+        if (game.user && isAllowedEditor(game.user)) {
             e.classList.add('hide-my-folders-selected-gm')
         }else{
             e.remove();
@@ -44,40 +54,48 @@ Hooks.on("renderAbstractSidebarTab", (_app, html) => {
     });
 });
 
-const getHiddenFolders = () => game.settings.get(MOD_NAME, FOLDERS_LIST);
-const getEditorRole = () => game.settings.get(MOD_NAME, EDITOR_ROLE);
-const isAllowedEditor = (user) => user.role >= getEditorRole()
+/** @returns {string[]} */
+const getHiddenFolders = () => getSettings().get(MOD_NAME, FOLDERS_LIST);
+const getEditorRole = () => getSettings().get(MOD_NAME, EDITOR_ROLE);
+/** @param {User} user */
+const isAllowedEditor = (user) => user.role >= getEditorRole();
+/** @param {Element|null} element @returns {FolderElement|null} */
+const getFolderElement = element => element instanceof HTMLElement ? element : null;
+/** @param {HTMLElement} target @returns {FolderElement|null} */
+const getFolder = target => getFolderElement(target.closest('.directory-item.folder'));
 
 Hooks.on("getFolderContextOptions", (_app, menuItems) => {
     menuItems.push({
-        name: game.i18n.localize(`${MOD_NAME}.add`),
+        label: game.i18n?.localize(`${MOD_NAME}.add`) ?? `${MOD_NAME}.add`,
         icon: '<i class="fa-solid fa-eye-slash"></i>',
-        condition: li => {
-            const folder = li.parentElement;
-            const id = folder.dataset.uuid;
-            const classes = folder.classList;
-            return isAllowedEditor(game.user) && classes.contains('folder') && !getHiddenFolders().includes(id);
+        visible: target => {
+            const folder = getFolder(target);
+            const id = folder?.dataset.uuid;
+            const classes = folder?.classList;
+            return Boolean(game.user && id && classes?.contains('folder') && isAllowedEditor(game.user) && !getHiddenFolders().includes(id));
         },
-        callback: li => {
-            const folder = li.parentElement;
-            const id = folder.dataset.uuid;
-            game.settings.set(MOD_NAME, FOLDERS_LIST, [...getHiddenFolders(), id]);
+        onClick: (_event, target) => {
+            const folder = getFolder(target);
+            const id = folder?.dataset.uuid;
+            if (!id) return;
+            getSettings().set(MOD_NAME, FOLDERS_LIST, [...getHiddenFolders(), id]);
         }
     });
 
     menuItems.push({
-        name: game.i18n.localize(`${MOD_NAME}.remove`),
+        label: game.i18n?.localize(`${MOD_NAME}.remove`) ?? `${MOD_NAME}.remove`,
         icon: '<i class="fa-solid fa-eye"></i>',
-        condition: li => {
-            const folder = li.parentElement;
-            const classes = folder.classList;
-            const id = folder.dataset.uuid;
-            return isAllowedEditor(game.user) && classes.contains('folder') && getHiddenFolders().includes(id);
+        visible: target => {
+            const folder = getFolder(target);
+            const classes = folder?.classList;
+            const id = folder?.dataset.uuid;
+            return Boolean(game.user && id && classes?.contains('folder') && isAllowedEditor(game.user) && getHiddenFolders().includes(id));
         },
-        callback: li => {
-            const folder = li.parentElement;
-            const id = folder.dataset.uuid;
-            game.settings.set(MOD_NAME, FOLDERS_LIST, [...getHiddenFolders().filter(f => f != id)]);
+        onClick: (_event, target) => {
+            const folder = getFolder(target);
+            const id = folder?.dataset.uuid;
+            if (!id) return;
+            getSettings().set(MOD_NAME, FOLDERS_LIST, [...getHiddenFolders().filter(f => f != id)]);
         }
     });
 });

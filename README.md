@@ -1,4 +1,4 @@
-![](https://img.shields.io/badge/Foundry-v13-informational)
+![](https://img.shields.io/badge/Foundry-v14-informational)
 ![Latest Release Download Count](https://img.shields.io/github/downloads/4m2c4bl3/hide-my-folders/latest/module.zip)
 
 <!--- Forge Bazaar Install % Badge -->
